@@ -34,80 +34,31 @@ namespace reallife.Player
 
         public static void CarLock(Client client)
         {
-            Vehicle personal_vehicle = client.GetData("PersonalVehicle");
-            Vehicle frak_vehicle = client.GetData("FrakVehicle");
-            Vehicle rent_vehicle = client.GetData("RentVehicle");
-
-            int zahl = 0;
-
-            if (client.HasData("PersonalVehicle"))
+            Vehicle[] vehicles = new Vehicle[] { client.GetData("PersonalVehicle"), client.GetData("FrakVehicle"), client.GetData("RentVehicle") };
+            Vehicle vehicleToLock = null;
+            foreach (Vehicle vehicle in vehicles)
             {
-                if (client.Position.DistanceTo2D(personal_vehicle.Position) <= 3)
+                if(vehicle != null && client.Position.DistanceTo2D(vehicle.Position) <= 3)
                 {
-                    zahl = 1;
+                    vehicleToLock = vehicle;
                 }
             }
-
-            if (client.HasData("FrakVehicle"))
+            if(vehicleToLock != null)
             {
-                if (client.Position.DistanceTo2D(frak_vehicle.Position) <= 3)
+                vehicleToLock.Locked = !vehicleToLock.Locked;
+
+                if (!vehicleToLock.Locked)
                 {
-                    zahl = 2;
+                    client.SendNotification($"~g~Das Fahrzeug wurde aufgeschlossen!");
+                }
+                else
+                {
+                    client.SendNotification($"~r~Das Fahrzeug wurde abgeschlossen!");
                 }
             }
-
-            if (client.HasData("RentVehicle"))
+            else
             {
-                if (client.Position.DistanceTo2D(rent_vehicle.Position) <= 3)
-                {
-                    zahl = 3;
-                }
-            }
-
-            switch (zahl)
-            {
-                case 1:
-                    personal_vehicle.Locked = !personal_vehicle.Locked;
-
-                    if (!personal_vehicle.Locked)
-                    {
-                        client.SendNotification($"~g~Das Fahrzeug wurde aufgeschlossen!");
-                    }
-                    else
-                    {
-                        client.SendNotification($"~r~Das Fahrzeug wurde abgeschlossen!");
-                    }
-                    break;
-
-                case 2:
-                    frak_vehicle.Locked = !frak_vehicle.Locked;
-
-                    if (!frak_vehicle.Locked)
-                    {
-                        client.SendNotification($"~g~Das Fahrzeug wurde aufgeschlossen!");
-                    }
-                    else
-                    {
-                        client.SendNotification($"~r~Das Fahrzeug wurde abgeschlossen!");
-                    }
-                    break;
-
-                case 3:
-                    rent_vehicle.Locked = !rent_vehicle.Locked;
-
-                    if (!rent_vehicle.Locked)
-                    {
-                        client.SendNotification($"~g~Das Fahrzeug wurde aufgeschlossen!");
-                    }
-                    else
-                    {
-                        client.SendNotification($"~r~Das Fahrzeug wurde abgeschlossen!");
-                    }
-                    break;
-
-                default:
-                    client.SendNotification("Du befindest dich nicht in der nähe von einem deiner Fahrzeuge!");
-                    break;
+                client.SendNotification("Du befindest dich nicht in der nähe von einem deiner Fahrzeuge!");
             }
         }
 
