@@ -77,47 +77,12 @@ namespace reallife.Player
             return BCryptHelper.CheckPassword(input, this.password);
         }
 
+        static readonly string[] rankNames = new string[]{"Bürger", "Supporter", "Admin", "Serverleiter"};
+
         public static string WhichADMIN(Client client)
         {
             PlayerInfo playerInfo = PlayerHelper.GetPlayerStats(client);
-            string rang;
-            int zahl = 0;
-
-            if (playerInfo.adminrank == 1)
-            {
-                zahl = 1;
-            }
-
-            if (playerInfo.adminrank == 2)
-            {
-                zahl = 2;
-            }
-
-            if (playerInfo.adminrank == 3)
-            {
-                zahl = 3;
-            }
-
-            switch (zahl)
-            {
-                case 1:
-                    rang = "Supporter";
-                    break;
-
-                case 2:
-                    rang = "Admin";
-                    break;
-
-                case 3:
-                    rang = "Serverleiter";
-                    break;
-
-                default:
-                    rang = "Bürger";
-                    break;
-            }
-
-            return rang;
+            return rankNames[(playerInfo.adminrank > 3)? 0 : playerInfo.adminrank];
         }
 
         public static string WhichFrak(Client client)
